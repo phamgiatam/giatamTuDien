@@ -7,10 +7,10 @@ public class DictionaryManagement extends Dictionary{
             Scanner scanner = new Scanner(System.in);
             n = scanner.nextInt();
             for(int i = 0; i < n; i++){
-                Scanner sc1 = new Scanner(System.in);
-                Scanner sc2 = new Scanner(System.in);
-                temp1 = sc1.nextLine();
-                temp2 = sc2.nextLine();
+                
+                Scanner sc = new Scanner(System.in);
+                temp1 = sc.nextLine();
+                temp2 = sc.nextLine();
                 Word a = new Word(temp1, temp2);
                 arr.add(a);
             }
