@@ -10,6 +10,10 @@ public class Word {
         this.word_explain = word_explain;
     }
 
+    public Word(){
+
+    }
+
     public String getWord_target() {
         return word_target;
     };
