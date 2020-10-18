@@ -1,16 +1,37 @@
-
+import java.util.Scanner;
 
 public class DictionaryCommandLine extends DictionaryManagement{
+
     public void DictionaryBasic(){
-        DictionaryManagement dtm = new DictionaryManagement();
-        dtm.insertFromCommandline();
-        dtm.showAllWord();
+        this.insertFromCommandline();
+        this.showAllWord();
     }
     public void DictionaryAdvanced(){
-        DictionaryManagement dtm1 = new DictionaryManagement();
-        dtm1.insertFromFile();
-        dtm1.showAllWord();
-        dtm1.dictionaryLookup();
+        this.insertFromFile();
+        this.showAllWord();
+        this.dictionaryLookup();
+        this.dictionaryChange();
+        this.exportToFile();
+        this.dictionarySearcher();
+        this.showAllWord();
     }
+
+    public void dictionarySearcher() {
+        String target;
+        int check = 0;
+        Scanner sc3 = new Scanner(System.in);
+        System.out.println("Search : ");
+        target = sc3.nextLine();
+        for (Word a : arr) {
+            if (a.getWord_target().contains(target)) {
+                System.out.println(a.getWord_target() + " -> " + a.getWord_explain());
+                check = 1;
+                break;
+            }
+        }
+        if(check == 0 ) System.out.println("Cannot find your word!!!");
+
+    }
+
 
 }
