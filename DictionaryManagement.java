@@ -1,11 +1,18 @@
+package sample;
 
 import java.io.*;
 import java.nio.file.Paths;
 import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
 
 public class DictionaryManagement extends Dictionary{
+
+        public DictionaryManagement () {
+            insertFromFile();
+        }
 
         public void insertFromCommandline() {
             int n;
@@ -34,20 +41,20 @@ public class DictionaryManagement extends Dictionary{
                     vt.add(line);
                 }
 
-                for (int i = 0; i < vt.size(); i += 2) {
+                for (int i = 0; i < vt.size() - 1; i += 2) {
                     Word w = new Word();
                     w.setWord_target(vt.get(i));
                     w.setWord_explain(vt.get(i + 1));
                     arr.add(w);
                 }
             } catch (FileNotFoundException e) {
-
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
         }
         public void showAllWord(){
-            System.out.println("NO\t| English\t\t|Vietnamese");
+            System.out.println("NO\t|English\t\t|Vietnamese");
             int i = 1;
             for(Word temp : arr){
                 System.out.println( i +"\t|"+ temp.getWord_target() + "\t\t|" + temp.getWord_explain());
@@ -55,112 +62,61 @@ public class DictionaryManagement extends Dictionary{
             }
         }
 
-        public void dictionaryLookup(){
-            System.out.println("Select the kind you want to look up: ");
-            System.out.println("1. English to Vietnamese");
-            System.out.println("2. Vietnamese to English");
-            System.out.println("Your selection: ");
-            Scanner scanner = new Scanner(System.in);
-            int selection = scanner.nextInt();
+        public String dictionaryLookup(String in){
+            String out = "";
             int check = 0;
-            if(selection == 1) {
-                System.out.println("Your word: ");
-                Scanner sc1 = new Scanner(System.in);
-                String str = sc1.nextLine();
                 for(Word a: arr){
-                    if(str.equals(a.getWord_target())) {
+                    if(in.equals(a.getWord_target())) {
                         check = 1;
-                        System.out.println("The result: ");
-                        System.out.println(a.getWord_target() + "   " + a.getWord_explain());
+
+                        out = a.getWord_explain();
                         break;
                     }
                 }
                 if (check == 0) {
-                    System.out.println("Cannot find your word!!!");
+                    out = "Cannot find your word!!!";
                 }
-            }
-            else if(selection == 2) {
-                Scanner sc2 = new Scanner(System.in);
-                System.out.println("Your word: ");
-                String str = sc2.nextLine();
-                for(Word a: arr){
-                    if(str.equals(a.getWord_explain())) {
-                        check = 1;
-                        System.out.println("The result: ");
-                        System.out.println(a.getWord_target() + "   " + a.getWord_explain());
-                        break;
-                    }
-                }
-                if (check == 0) {
-                    System.out.println("Cannot find your word!!!");
-                }
-            }
+
+            return out;
         }
 
-        public void dictionaryChange(){
-            System.out.println("Change your dictionary:");
-            System.out.println("1. Add a word to the dictionary");
-            System.out.println("2. Fix a word");
-            System.out.println("3. Delete a word");
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Your selection: ");
-            int selection = scanner.nextInt();
+        public void dictionaryAdd(String target, String explain){
 
-            if(selection == 1){
-                String target, explain;
-                Scanner sc = new Scanner(System.in);
-                System.out.println("English : ");
-                target = sc.nextLine();
-                System.out.println("Vietnamese : ");
-                explain = sc.nextLine();
+            Word temp = new Word(target,explain);
+            arr.add(temp);
+        }
+
+        public void dictionaryFix(String target, String explain) {
+            int check = 0;
+            for(Word a: arr){
+                if(a.getWord_target().equals(target)){
+                    a.setWord_explain(explain);
+                    check = 1;
+                    break;
+                }
+            }
+            if(check == 0){
+                System.out.println("Cannot find your word!!");
+                System.out.println("Import your word to the dictionary");
                 Word temp = new Word(target,explain);
                 arr.add(temp);
             }
+        }
 
-            else if(selection == 2){
-                String target, explain;
-                System.out.println("Import the word you want to fix: ");
-                Scanner sc2 = new Scanner(System.in);
-                target = sc2.nextLine();
-                System.out.println("Import the fixed explain: ");
-                explain = sc2.nextLine();
-                int check = 0;
-                for(Word a: arr){
-                    if(a.getWord_target().equals(target)){
-                        a.setWord_explain(explain);
-                        check = 1;
-                        break;
-                    }
-                }
-                if(check == 0){
-                    System.out.println("Cannot find your word!!");
-                    System.out.println("Import your word to the dictionary");
-                    Word temp = new Word(target,explain);
-                    arr.add(temp);
+        public void dictionaryDelete(String target) {
+            int check = 0;
+            for(Word a: arr){
+                if(a.getWord_target().equals(target)){
+                    arr.remove(arr.indexOf(a));
+                    check = 1;
+                    break;
                 }
             }
-
-            else if(selection == 3){
-                String target;
-                int check = 0;
-                System.out.println("Import the word you want to delete: ");
-                Scanner sc3 = new Scanner(System.in);
-                target = sc3.nextLine();
-                for(Word a: arr){
-                    if(a.getWord_target().equals(target)){
-                        arr.remove(arr.indexOf(a));
-                        check = 1;
-                        System.out.println("Deleted");
-                        break;
-                    }
-                }
-                if(check == 0 ) {
-                    System.out.println("Cannot find your word!!!");
-                }
-
-
+            if(check == 0 ) {
+                System.out.println("Cannot find your word!!!");
             }
         }
+
 
         public void exportToFile(){
             try {
@@ -177,6 +133,19 @@ public class DictionaryManagement extends Dictionary{
             }
 
         }
+
+        public List<String> dictionarySearcher(String target) {
+            List<String>  out = new ArrayList<>();
+
+            for (Word a : arr) {
+                if (a.getWord_target().contains(target)) {
+                    out.add(a.getWord_target());
+
+                }
+            }
+            return out;
+        }
+
 
 
 
